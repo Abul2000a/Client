@@ -8,6 +8,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include "filedownloader.h"
 
 
 namespace Ui {
@@ -23,11 +24,7 @@ public:
     ~MainWindow();
     QByteArray downloadedData() const;
     QTcpSocket* socket;
-    QByteArray Data;
-    void saveImage();
-
-signals:
-  void downloaded();
+    QByteArrayList Data;
 
 public slots:
     void sockReady();
@@ -35,13 +32,14 @@ public slots:
 
 
 private slots:
-    void fileDownloaded(QNetworkReply* pReply);
+    void loadImage();
     void on_pushButton_clicked();
 
 private:
-    QNetworkAccessManager m_WebCtrl;
-    QByteArray m_DownloadedData;
+    FileDownloader* m_pImgCtrl;
     Ui::MainWindow *ui;
+
+
 };
 
 #endif // MAINWINDOW_H
