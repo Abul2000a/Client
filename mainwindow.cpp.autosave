@@ -1,26 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFile>
+#include "filedownloader.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QPixmap pixmap;
-    QFile file("https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260");
-    file.open(QIODevice::WriteOnly);
-    pixmap.save(&file, "PNG");
-    pixmap.load("https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260");
-    ui->label->setPixmap(pixmap);
-    QUrl imageUrl("http: //qt.digia.com/Documents/1/QtLogo.png");
-    connect(
-     &m_WebCtrl, SIGNAL (finished(QNetworkReply*)),
-     this, SLOT (fileDownloaded(QNetworkReply*))
-    );
-
-    QNetworkRequest request(imageUrl);
-    m_WebCtrl.get(request);
+    
     socket = new QTcpSocket(this);
         connect(socket,SIGNAL(readyRead()),this,SLOT(sockReady()));
         connect(socket,SIGNAL(disconnected()),this,SLOT(sockDisc()));
@@ -56,22 +44,3 @@ void MainWindow::sockReady()
 
     }
 }
-
-void MainWindow::fileDownloaded(QNetworkReply* pReply){
- m_DownloadedData = pReply->readAll();
- //emit a signal
- pReply->deleteLater();
- emit downloaded();
-}
-
-QByteArray MainWindow::downloadedData() const{
-    return m_DownloadedData;
-}
-
-void MainWindow::saveImage()
-{
-
-
-}
-
-

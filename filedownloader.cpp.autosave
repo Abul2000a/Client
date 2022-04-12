@@ -1,0 +1,27 @@
+#ifndef FILEDOWNLOADER_H
+#define FILEDOWNLOADER_H
+
+#include <QObject>
+#include <QByteArray>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
+#include <QUrl>
+
+
+class FileDownloader : public QObject
+{
+public:
+    explicit Filedownloader(QUrl imageUrl, QObject);
+    virtual ~filedownloader();
+    QByteArray downloadedData() const;
+signals:
+    void downloaded();
+private slots:
+    void fileDownloaded(QNetworkReply pReply);
+private:
+    QNetworkAccessManager m_WebCtrl;
+    QByteArray m_DownloadedData;
+};
+
+#endif // FILEDOWNLOADER_H
