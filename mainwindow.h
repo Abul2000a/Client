@@ -25,19 +25,27 @@ public:
     QByteArray downloadedData() const;
     QTcpSocket* socket;
     QByteArrayList Data;
+    QPixmap getPixmapIndex(int index){
+        return listPix[index];
+    }
 
 public slots:
     void sockReady();
     void sockDisc();
 
-
 private slots:
     void loadImage();
     void on_pushButton_clicked();
 
+    void on_pushButton_2_clicked();
+
 private:
-    FileDownloader* m_pImgCtrl;
+    QList<FileDownloader *> list;
+    QList<QPixmap> listPix;
+    FileDownloader * m_pImgCtrl;
+    QStringList ls;
     Ui::MainWindow *ui;
+    qsizetype currentImageIndex = 0;
 
 
 };

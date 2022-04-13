@@ -10,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     socket = new QTcpSocket(this);
-    connect(socket,SIGNAL(readyRead()),this,SLOT(sockReady()));
-    connect(socket,SIGNAL(disconnected()),this,SLOT(sockDisc()));
+    connect(socket,&QTcpSocket::readyRead,this,&MainWindow::sockReady);
+    connect(socket,&QTcpSocket::disconnected,this,&MainWindow::sockDisc);
 
 }
 
@@ -36,24 +36,50 @@ void MainWindow::sockReady()
     {
         socket->waitForReadyRead(500);
         QString s = socket->readAll();
-        QStringList ls = s.split(",");
-        qDebug() << ls[0];
-        for(int i = 0; i < ls.size();++i){
-            QUrl imageUrl(ls[i]);
-            m_pImgCtrl = new FileDownloader(imageUrl, this);
-
-            connect(m_pImgCtrl, SIGNAL(downloaded()),SLOT(loadImage()));
+        ls = s.split(",");
+        for(int i = 0;i < ls.size();i++){
+            //            QUrl imageUrl(ls[0]);
+            m_pImgCtrl = new FileDownloader(ls[i],this);
+            list.push_back(m_pImgCtrl);
         }
 
     }
+
+    Q_ASSERT(connect(m_pImgCtrl, &FileDownloader::downloaded,this, &MainWindow::loadImage));
+
 }
+
 
 
 void MainWindow::loadImage()
 {
     QPixmap buttonImage;
-    buttonImage.loadFromData(m_pImgCtrl->downloadedData());
+    buttonImage.loadFromData(list[currentImageIndex % list.size()]->downloadedData());
     ui->label->setPixmap(buttonImage);
 }
+
+
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    ++currentImageIndex;
+    loadImage();
+    return;
+    //    ui->label->clear();
+    QPixmap buttonImage;
+    for(int i = 1;i<list.size();++i){
+        buttonImage.loadFromData(list[i]->downloadedData());
+        listPix.push_back(buttonImage);
+    }
+
+//    for(int i = 1;i<listPix.size();++i){
+//        //buttonImage.loadFromData(list[i]->downloadedData());
+//        ui->label->setPixmap(listPix[i]);
+//    }
+
+}
+
+
 
 
