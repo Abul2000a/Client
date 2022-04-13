@@ -10,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     socket = new QTcpSocket(this);
-    connect(socket,&QTcpSocket::readyRead,this,&MainWindow::sockReady);
-    connect(socket,&QTcpSocket::disconnected,this,&MainWindow::sockDisc);
+    connect(socket,SIGNAL(readyRead()),this,SLOT(sockReady()));
+    connect(socket,SIGNAL(disconnected()),this,SLOT(sockDisc()));
 
 }
 
@@ -37,12 +37,12 @@ void MainWindow::sockReady()
         socket->waitForReadyRead(500);
         QString s = socket->readAll();
         QStringList ls = s.split(",");
-
+        qDebug() << ls[0];
         for(int i = 0; i < ls.size();++i){
             QUrl imageUrl(ls[i]);
             m_pImgCtrl = new FileDownloader(imageUrl, this);
 
-            connect(m_pImgCtrl, &FileDownloader::downloaded,&MainWindow::loadImage);
+            connect(m_pImgCtrl, SIGNAL(downloaded()),SLOT(loadImage()));
         }
 
     }
