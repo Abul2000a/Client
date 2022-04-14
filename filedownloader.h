@@ -2,9 +2,9 @@
 #define FILEDOWNLOADER_H
 
 #include <QObject>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+
+class QNetworkReply;
+class QNetworkRequest;
 
 class FileDownloader : public QObject
 {
