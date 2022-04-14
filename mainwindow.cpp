@@ -5,52 +5,43 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include "filedownloader.h"
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),socket(new QTcpSocket(this)),
+    QMainWindow(parent),
+    socket(new QTcpSocket(this)),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     connect(socket, &QTcpSocket::readyRead, this, &MainWindow::sockReady);
-    connect(socket, &QTcpSocket::disconnected, this, &MainWindow::sockDisc);
-
 }
 
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    ui = nullptr;
 }
 
 
 void MainWindow::on_pushButton_clicked()
 {
-    socket->connectToHost("127.0.0.1",5555);
-}
-
-
-void MainWindow::sockDisc()
-{
-    if(dynamic_cast<QAbstractSocket*>(sender())) {
-        sender()->deleteLater();
-    }
+    socket->connectToHost(ui->lineEdit->text(),5555);
 }
 
 
 void MainWindow::sockReady()
 {
-    FileDownloader * m_pImgCtrl;
+    ui->lineEdit->setText("Connected Press Next");
     QString s = socket->readAll();
-    QStringList ls = s.split("$~");
-
-    for(int i = 0;i < ls.size();i++){
+    QStringList ls = s.split(",");
+    for(int i = 0; i < ls.size(); i++){
         m_pImgCtrl = new FileDownloader(ls[i],this);
+
         list.push_back(m_pImgCtrl);
     }
 
-    socket = new QTcpSocket(this);
     connect(m_pImgCtrl, &FileDownloader::downloaded, this, &MainWindow::loadImage);
-
 }
 
 
