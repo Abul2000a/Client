@@ -1,8 +1,10 @@
 #ifndef FILEDOWNLOADER_H
 #define FILEDOWNLOADER_H
 
+#include <QNetworkAccessManager>
 #include <QObject>
 
+class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkRequest;
 
