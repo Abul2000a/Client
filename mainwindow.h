@@ -30,8 +30,8 @@ private slots:
 private:
     QTcpSocket* socket;
     QList<FileDownloader *> list;
-    Ui::MainWindow *ui;
     qsizetype currentImageIndex = 0;
+    Ui::MainWindow *ui;
 };
 
 #endif // MAINWINDOW_H

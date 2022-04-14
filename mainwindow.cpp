@@ -31,7 +31,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::sockDisc()
 {
-    if(qobject_cast<QAbstractSocket*>(sender())) {
+    if(dynamic_cast<QAbstractSocket*>(sender())) {
         sender()->deleteLater();
     }
 }
