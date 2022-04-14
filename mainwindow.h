@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QTcpSocket>
-#include <QMessageBox>
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -25,9 +24,6 @@ public:
     QByteArray downloadedData() const;
     QTcpSocket* socket;
     QByteArrayList Data;
-    QPixmap getPixmapIndex(int index){
-        return listPix[index];
-    }
 
 public slots:
     void sockReady();
@@ -46,8 +42,6 @@ private:
     QStringList ls;
     Ui::MainWindow *ui;
     qsizetype currentImageIndex = 0;
-
-
 };
 
 #endif // MAINWINDOW_H
