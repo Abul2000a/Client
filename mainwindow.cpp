@@ -1,16 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QFile>
 #include <QtWidgets/QMainWindow>
-
+#include <QTcpSocket>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include "filedownloader.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+    QMainWindow(parent),socket(new QTcpSocket(this)),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    socket = new QTcpSocket(this);
     connect(socket, &QTcpSocket::readyRead, this, &MainWindow::sockReady);
     connect(socket, &QTcpSocket::disconnected, this, &MainWindow::sockDisc);
 
@@ -31,24 +31,24 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::sockDisc()
 {
-    socket->deleteLater();
+    if(qobject_cast<QAbstractSocket*>(sender())) {
+        sender()->deleteLater();
+    }
 }
 
 
 void MainWindow::sockReady()
 {
-    if (socket->waitForConnected(500))
-    {
-        socket->waitForReadyRead(500);
-        QString s = socket->readAll();
-        ls = s.split(",");
-        for(int i = 0;i < ls.size();i++){
-            m_pImgCtrl = new FileDownloader(ls[i],this);
-            list.push_back(m_pImgCtrl);
-        }
+    FileDownloader * m_pImgCtrl;
+    QString s = socket->readAll();
+    QStringList ls = s.split("$~");
 
+    for(int i = 0;i < ls.size();i++){
+        m_pImgCtrl = new FileDownloader(ls[i],this);
+        list.push_back(m_pImgCtrl);
     }
 
+    socket = new QTcpSocket(this);
     connect(m_pImgCtrl, &FileDownloader::downloaded, this, &MainWindow::loadImage);
 
 }
@@ -56,9 +56,9 @@ void MainWindow::sockReady()
 
 void MainWindow::loadImage()
 {
-    QPixmap buttonImage;
-    buttonImage.loadFromData(list[currentImageIndex % list.size()]->downloadedData());
-    ui->label->setPixmap(buttonImage);
+    QPixmap Image;
+    Image.loadFromData(list[currentImageIndex % list.size()]->downloadedData());
+    ui->label->setPixmap(Image);
 }
 
 
@@ -66,7 +66,6 @@ void MainWindow::on_pushButton_2_clicked()
 {
     ++currentImageIndex;
     loadImage();
-    return;
 }
 
 
