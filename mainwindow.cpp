@@ -35,7 +35,7 @@ void MainWindow::clearList(){
     for(int i = 0; i < list.size(); i++){
         if(list[i] != nullptr){
             delete list[i];
-            list[i]=nullptr;
+            list[i] = nullptr;
         }
     }
         list.clear();
