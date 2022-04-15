@@ -19,17 +19,17 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
 public slots:
     void sockReady();
 
 private slots:
-
     void loadImage();
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
 
 private:
-    FileDownloader * m_pImgCtrl = nullptr;
+    void clearList();
     QTcpSocket* socket;
     QList<FileDownloader *> list;
     qsizetype currentImageIndex = 0;

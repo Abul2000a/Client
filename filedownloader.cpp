@@ -12,7 +12,8 @@ FileDownloader::FileDownloader(QUrl imageUrl, QObject *parent) :
 }
 
 
-void FileDownloader::fileDownloaded(QNetworkReply* pReply) {
+void FileDownloader::fileDownloaded(QNetworkReply* pReply)
+{
     m_DownloadedData = pReply->readAll();
     pReply->deleteLater();
     emit downloaded();

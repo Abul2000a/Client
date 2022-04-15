@@ -5,7 +5,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include "filedownloader.h"
-#include <QDir>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,6 +21,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     ui = nullptr;
+    clearList();
 }
 
 
@@ -30,15 +31,30 @@ void MainWindow::on_pushButton_clicked()
 }
 
 
+void MainWindow::clearList(){
+    for(int i = 0; i < list.size(); i++){
+        if(list[i] != nullptr){
+            delete list[i];
+            list[i]=nullptr;
+        }
+    }
+        list.clear();
+}
+
+
 void MainWindow::sockReady()
 {
+    clearList();
+    FileDownloader * m_pImgCtrl = nullptr;
     ui->lineEdit->setText("Connected Press Next");
-    QString s = socket->readAll();
-    QStringList ls = s.split(",");
-    for(int i = 0; i < ls.size(); i++){
-        m_pImgCtrl = new FileDownloader(ls[i],this);
+    QString readSocket = socket->readAll();
+    readSocket.remove('\n');
+    QStringList splitedUrls = readSocket.split("...", Qt::SkipEmptyParts);
+    for(int i = 0; i < splitedUrls.size(); i++){
+        m_pImgCtrl = new FileDownloader(splitedUrls[i]);
 
         list.push_back(m_pImgCtrl);
+
     }
 
     connect(m_pImgCtrl, &FileDownloader::downloaded, this, &MainWindow::loadImage);
